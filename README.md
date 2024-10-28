@@ -56,7 +56,7 @@ Remember that you will need to interact with the `git` using such commands:
 
 ## 2. Working with the git repository
 For starters, let's start using the git for versioning our project.
-1. Create a fork of the project on GitHub.
+1. Create a fork of this project on GitHub.
 2. Clone the repository via SSH:
 ```bash
 mkdir ~/ws
@@ -66,15 +66,15 @@ git clone git@github.com:vision-agh/mldevops_exercise.git
 > (Replace the `vision-agh` with your `github_username`).
 
 > [!IMPORTANT]
-> Using `https` for cloning the repo will allow only to pull the changes. For both pulling and pushing it is necessary to use the `ssh` protocol. Information how to prepare keys and add them to the GitHub account can be found [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+> Using `https` for cloning the repo will allow only to pull the code. For both pulling and pushing it is necessary to use the `ssh` protocol. Information how to prepare keys and add them to the GitHub account can be found [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 
-3. Copy your previous ML project files (`.py` and `.ipynb`) the the root of the cloned repository.
+1. Copy your previous ML project files (`.py` and `.ipynb`) the the root of the cloned repository.
 ```bash
 cd ~/ws/mldevops_exercise
 # Copy here your project
 ```
 
-4. Commit and push your changes to the origin (i.e. GitHub) repository.
+1. Commit and push your changes to the origin (i.e. GitHub) repository.
 ```bash
 # We use the dot to add all files. Note, that it is not a typical practice.
 git add .
@@ -82,11 +82,11 @@ git commit -m "initial project commit"
 git push
 ```
 
-5. Enable `Issues` feature in your GitHub repository:
+1. Enable `Issues` feature in your GitHub repository:
   - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`,
   - Go to the `Settings` on the right,
   - Enable the `Issues` feature (the rest can be disabled),
-6. Secure your default branch (`main`/`master`) from accendtial commits:
+2. Secure your default branch (`main`/`master`) from accendtial commits:
   - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`,
   - Go to the `Settings` on the right,
   - Select `Branches` on the left tree,
@@ -98,19 +98,21 @@ git push
 After the setup, you are ready to proceed with the exercises.
 
 ## 3. The project workflow
-1. For each task, create a branch called: 'feature/task_X`,
+1. For each task, create a branch called: `feature/task_X`,
 2. Commit all changes (**and only that changes**) for the particular task to its branch and push them to the GitHub.
 3. To finish a task create a pull request (PR) from `feature/task_X` to `main`. The title of the PR should be set to the task description (see below).
 4. **Do not delete the branches** after mergning the PR.
 
 Tasks:
  * **Task 1**: Improve the formatting using `black`.
- * **Task 2**: Create a python package for your project.
- * **Task 3**: Add a online logging framework
- * **Task 4**: Use optuna to perform a hyperparameter search
- * **Task 5**: Add docstrings to every file.
+ * **Task 2**: Setup Pre-commit to automate formatting.
+ * **Task 3**: Create a python package for your project.
+ * **Task 4**: Add a online logging framework.
+ * **Task 5**: Use optuna to perform a hyperparameter search.
+ * **Task 6**: Add docstrings & typing to every Python file.
 
-## Task 1
+===
+## Task 1 - *Any color you like*
 Your first task is to install black and format the code. Take a look here: https://github.com/psf/black
 
 ```bash
@@ -120,43 +122,71 @@ black --line-length 120 ~/ws/mldevops_exercise
 
 Now everything looks pretty.
 
-## Task 2
-> [!CAUTION]
-> The `poetry` should be a better learning example in A.D. 2024.
+===
+## Task 2 - Pre-commit
+It is always possible to run the `black` manually, but human memory can be faulty. Especially before making a commit to the repository. Fortunately it is possible to automate it with `Pre-commit`.
 
-You have to correctly create a `setup.py` Then you can install the package as follows:
+Start with the official [quick-setup guide](https://pre-commit.com/#introduction).
+
 ```bash
-cd ~/ws/mldevops_exercise
-pip3 install -e ./
-```
-We would like the repository structure to look as follows:
-```
-project_name:
-├──results:
-│    ├──YEAR_MONTH_DAY_TIME_experiment_name:
-│        ├──results.yml
-│        └──....
-│
-├──project_name:
-│    ├──models:
-│    |   ├──cnn.py
-│    |   └──__init__.py
-│    └──__init__.py
-│
-├──scripts:
-│    ├──train.py
-│    └──timing.py
-│
-├──setup.py
-├──.gitignore
-├──README.md
+pip3 install pre-commit
+pre-commit --version
 ```
 
-However, we do not want to commit the files within the results folder.
+In the repository there is an already prepared `.pre-commit-config.yaml` - inspect it, it is necessary configuration for the `pre-commit`.
 
-Modify the `.gitignore` file and add all the files within the results to be ignored.
+After that, there is need to register the `pre-commit` command as a git hook, which will be run every time during the `git commit` command:
 
-## Task 3
+```bash
+# Register the hook
+pre-commit install
+# Run the pre-commit on all files
+pre-commit run --all-files
+```
+
+There is a good chance that there will be a lots of changes regarding white characters in your code. It should be more clenaer now (at least prom the `git` perspective).
+
+Extend the automation further with `black`, `codespell` (to fix typos) and `pyupgrade` (to update your syntax to Python 3.10)
+
+```yaml
+  # Black formatter
+  - repo: https://github.com/psf/black
+    rev: 24.4.0
+    hooks:
+      - id: black
+        args: ["--line-length=120"]
+
+  # Codespell - Fix common misspellings in text files.
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        args: [--write-changes]
+
+  # Pyupgrade - automatically upgrade syntax for newer versions of the language.
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.2
+    hooks:
+      - id: pyupgrade
+        args: [--py310-plus]
+```
+
+===
+## Task 3 - Poetry dependency & build manager
+There are mainly 2 systems regarding dependency management and package build for the python: `setuptools` and `poetry`. As rule of thumb: if there is a need to support complex builds (even with pybindings for dynamic C/C++ libraries), `setuptools` will be an appropite tool for that. For many modern Python projects `poetry` provides a simple configuration, both for project dependency management (it can simplify Dockerfiles) and for package build.
+
+Let's dive into the `poetry` [Introduction (1)](https://python-poetry.org/docs/) and the [Basic Usage (2)](https://python-poetry.org/docs/basic-usage/) and setup a dependency managemnt & possibility to build our package.
+
+```bash
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install poetry
+```
+
+Remember to modify the `.gitignore` file to omit any necesery files from the git tracking.
+
+---
+## Task 4 - Logging experument with wandb
 Add the *Weights & Biases* (`wandb`) logger.
 ```bash
 pip3 install wandb
@@ -166,14 +196,15 @@ pip3 install wandb
 3. Create a screenshot of a run with the loss curve and the uploaded artifact.
 4. Commit this screenshot to the repository.
 
-## Task 4
+---
+## Task 5 - Hyperoptimization
 Use the `optuna` to find the best hyperparamers (e.g. `learning rate` or `epoch`).
 
 ```bash
 pip3 install optuna
 ```
 
-Use the [official examples](https://optuna.org/#code_examples) for implement the search:
+Use the [official examples](https://optuna.org/#code_examples) and perform some hyperopt search. Here is a small example:
 ```python3
 import optuna
 
@@ -187,14 +218,17 @@ study.optimize(objective, n_trials=100)
 study.best_params  # E.g. {'x': 2.002108042}
 ```
 
-## Task 5
-Add docstrings to all classes and functions: https://peps.python.org/pep-0257/
+---
+## Task 6 - Docstrings & typing
+1. Add docstrings to all classes and functions which can be used publicly or are not trivial: https://peps.python.org/pep-0257/
+2. Add typing to every function and method in your project: https://realpython.com/python-type-checking/#hello-types
 
+---
 ## Things we did not cover
-- Typing in Python
 - Linting
+- Automatic testing
 - Automation (GitHub Actions)
-- Pre-commit
+- CI\CD
 
 ---
 ## Sources:
