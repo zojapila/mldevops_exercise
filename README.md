@@ -1,28 +1,34 @@
-# Development Operations around a Machine Learning project
-*(Heavly based on the [leggedrobotics/plr-exercise](https://github.com/leggedrobotics/plr-exercise) repository)*
+# Development Operations for a Machine Learning Project
+
+*(Heavily based on the [leggedrobotics/plr-exercise](https://github.com/leggedrobotics/plr-exercise) repository)*
 
 > [!NOTE]
-> During this laboratory we will do a refiament of your previous ML project. For instance, consider the [previous mini-projects](https://home.agh.edu.pl/~mdig/dokuwiki/doku.php?id=teaching:data_science:ml_en:topics:nn_intro).
+> In this laboratory session, we will refine your previous ML project. For reference, consider the [previous mini-projects](https://home.agh.edu.pl/~mdig/dokuwiki/doku.php?id=teaching:data_science:ml_en:topics:nn_intro).
 
 ---
 
 ## Prerequisites
-- an [github.com](https://github.com/) account,
-- a computer with GPU or a Google Account for the [Colaboratory](https://colab.research.google.com),
-- an arbitrary machine learning project,
+
+- A [github.com](https://github.com/) account
+- A computer with GPU or a Google Account for [Colaboratory](https://colab.research.google.com)
+- An existing machine learning project
 
 ## 1. Dependency management
-Before anything, the development environment (for the Python based project) must be defined. There are two main approaches:
-1. **Contenerization** - create a Dockerfile to create an image with all dependencies.
-2. **Virtual environment** - which allows to separate Python packages from the OS (and between the projects).
 
-### Contenerization
-If you have an access to the local machine with admin privileges, you should go with the containers (e.g. [Docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) or [Podman](https://podman.io/docs/installation)).
+Before proceeding, you must define the development environment for your Python-based project. There are two main approaches:
+
+1. **Containerization** - Create a Dockerfile to define an image with all dependencies.
+2. **Virtual Environment** - Set up a virtual environment to isolate Python packages from the OS and other projects.
+
+### Containerization
+
+If you have access to a local machine with admin privileges, containerization (e.g., with [Docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) or [Podman](https://podman.io/docs/installation)) is recommended.
 
 ### Virtual environment
-If you are just a local user, please continue with virtual environment.
+
+If you are a standard user on the local machine, please proceed with a virtual environment:
 ```bash
-# Create folder to store virtual environments
+# Create a folder for virtual environments
 mkdir ~/venv
 # Create the virtual environment
 python3 -m venv ~/venv/mldevops
@@ -37,13 +43,14 @@ alias venv_plr="source ~/venv/plr/bin/activate"
 ```
 
 ### Remote development approach
-Sometimes the local machine is not prepared for the project development and there is no option to install anything new. **Typically such machine can be used as a SSH terminal for accessing the remote development environment.**
 
-It can also be used similarly to run the webbrowser to access a remote IDE, such as a *Jupyter Lab* instance or [Google Colaboratory](https://colab.research.google.com). It must be emphasised that it is not a good practice to work excusivly with the Jupyter Notebooks - a lot of things can go wrong.
+In cases where the local machine is not prepared for project development and installing new software is not possible, **it can be used as an SSH terminal to access a remote development environment**.
 
-The following laboratory exercies can be accomplished using just the Google Colaboratory, but refer to this more like a situation hack than an actual *good practice*.
+Alternatively, you can use a web browser to access remote IDEs such as *Jupyter Lab* instance or [Google Colaboratory](https://colab.research.google.com). Note, however, that it is generally not recommended to work exclusively in Jupyter Notebooks, as various issues may arise.
 
-Remember that you will need to interact with the `git` using such commands:
+The following exercises can be completed using only Google Colaboratory, though this should be viewed as a temporary solution rather than a *best practice*.
+
+You will need to interact with `git` using commands like the following:
 ```bash
 !git config --global user.email "student@student.agh.edu.pl"
 !git config --global user.name "student"
@@ -54,8 +61,9 @@ Remember that you will need to interact with the `git` using such commands:
 !cd mldevops_exercise && git push
 ```
 
-## 2. Working with the git repository
-For starters, let's start using the git for versioning our project.
+## 2. Working with the Git repository
+
+To begin, use Git for version control on your project:
 1. Create a fork of this project on GitHub.
 2. Clone the repository via SSH:
 ```bash
@@ -66,7 +74,7 @@ git clone git@github.com:vision-agh/mldevops_exercise.git
 > (Replace the `vision-agh` with your `github_username`).
 
 > [!IMPORTANT]
-> Using `https` for cloning the repo will allow only to pull the code. For both pulling and pushing it is necessary to use the `ssh` protocol. Information how to prepare keys and add them to the GitHub account can be found [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+> Cloning via `https` allows only for pulling the code. For both pulling and pushing, use the `ssh` protocol. Instructions for setting up SSH keys and adding them to your GitHub account are available [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 
 1. Copy your previous ML project files (`.py` and `.ipynb`) the the root of the cloned repository.
 ```bash
@@ -82,60 +90,64 @@ git commit -m "initial project commit"
 git push
 ```
 
-1. Enable `Issues` feature in your GitHub repository:
-  - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`,
-  - Go to the `Settings` on the right,
-  - Enable the `Issues` feature (the rest can be disabled),
-2. Secure your default branch (`main`/`master`) from accendtial commits:
-  - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`,
-  - Go to the `Settings` on the right,
-  - Select `Branches` on the left tree,
-  - Click on the `Add branch ruleset` button,
-  - Name the ruleset as "default", set the enforcement status to "enabled", setup the Targets with the `Add target` combo list by selecting the "Include default branch" option.
-  - For the options, enable: `Restrict deletions`, `Require a pull request before merging`, `Block force pushes`
-  - Finish by clicking the `Create` button.
+1. Enable the `Issues` feature in your GitHub repository:
+   - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`.
+   - Go to `Settings` on the right.
+   - Enable the `Issues` feature (the other features can be disabled).
 
-After the setup, you are ready to proceed with the exercises.
+2. Secure your default branch (`main`/`master`) from accidental commits:
+   - Open `https://github.com/GITHUB_USERNAME/mldevops_exercise`.
+   - Go to `Settings` on the right.
+   - Select `Branches` on the left menu.
+   - Click on the `Add branch ruleset` button.
+   - Name the ruleset "default," set the enforcement status to "enabled," and configure the Targets with the `Add target` dropdown by selecting the "Include default branch" option.
+   - For the options, enable the following: `Restrict deletions`, `Require a pull request before merging`, and `Block force pushes`.
+   - Finish by clicking the `Create` button.
 
-## 3. The project workflow
-1. For each task, create a branch called: `feature/task_X`,
-2. Commit all changes (**and only that changes**) for the particular task to its branch and push them to the GitHub.
-3. To finish a task create a pull request (PR) from `feature/task_X` to `main`. The title of the PR should be set to the task description (see below).
-4. **Do not delete the branches** after mergning the PR.
+After completing the setup, you are ready to proceed with the exercises.
+
+## 3. Project Workflow
+
+1. For each task, create a branch named `feature/task_X`.
+2. Commit all changes (**and only those changes**) related to the specific task to its branch, then push them to GitHub.
+3. To complete a task, create a pull request (PR) from `feature/task_X` to `main`. Set the PR title to the task description (see below).
+4. **Do not delete the branches** after merging the PR.
 
 Tasks:
- * **Task 1**: Improve the formatting using `black`.
- * **Task 2**: Setup Pre-commit to automate formatting.
- * **Task 3**: Create a python package for your project.
- * **Task 4**: Add a online logging framework.
- * **Task 5**: Use optuna to perform a hyperparameter search.
- * **Task 6**: Add docstrings & typing to every Python file.
+ * **Task 1**: Improve formatting using `black`.
+ * **Task 2**: Set up Pre-commit to automate formatting.
+ * **Task 3**: Create a Python package for your project.
+ * **Task 4**: Add an online logging framework.
+ * **Task 5**: Use Optuna to perform hyperparameter search.
+ * **Task 6**: Add docstrings and type annotations to every Python file.
+---
 
-===
-## Task 1 - *Any color you like*
-Your first task is to install black and format the code. Take a look here: https://github.com/psf/black
+## Task 1 - *Any Color You Like*
+
+Your first task is to install `black` and format the code. For more information, visit: [https://github.com/psf/black](https://github.com/psf/black).
 
 ```bash
 pip3 install black
 black --line-length 120 ~/ws/mldevops_exercise
 ```
 
-Now everything looks pretty.
+Now everything should look well-formatted.
 
-===
+---
 ## Task 2 - Pre-commit
-It is always possible to run the `black` manually, but human memory can be faulty. Especially before making a commit to the repository. Fortunately it is possible to automate it with `Pre-commit`.
 
-Start with the official [quick-setup guide](https://pre-commit.com/#introduction).
+While it's possible to run `black` manually, relying on memory before every commit can be unreliable. Fortunately, automation with `Pre-commit` makes this easier.
+
+Begin by following the official [quick-setup guide](https://pre-commit.com/#introduction).
 
 ```bash
 pip3 install pre-commit
 pre-commit --version
 ```
 
-In the repository there is an already prepared `.pre-commit-config.yaml` - inspect it, it is necessary configuration for the `pre-commit`.
+In the repository, there is an already-prepared `.pre-commit-config.yaml` file. Inspect it—this file contains the necessary configuration for `Pre-commit`.
 
-After that, there is need to register the `pre-commit` command as a git hook, which will be run every time during the `git commit` command:
+Next, register the `pre-commit` command as a Git hook, which will automatically run each time you use `git commit`:
 
 ```bash
 # Register the hook
@@ -144,9 +156,9 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-There is a good chance that there will be a lots of changes regarding white characters in your code. It should be more clenaer now (at least prom the `git` perspective).
+You may notice many changes, particularly regarding whitespace in your code. It should now appear much cleaner (at least from `git`'s perspective).
 
-Extend the automation further with `black`, `codespell` (to fix typos) and `pyupgrade` (to update your syntax to Python 3.10)
+To further extend automation, add tools like `black` (for formatting), `codespell` (to fix typos), and `pyupgrade` (to update syntax to Python 3.10).
 
 ```yaml
   # Black formatter
@@ -171,11 +183,12 @@ Extend the automation further with `black`, `codespell` (to fix typos) and `pyup
         args: [--py310-plus]
 ```
 
-===
+---
 ## Task 3 - Poetry dependency & build manager
-There are mainly 2 systems regarding dependency management and package build for the python: `setuptools` and `poetry`. As rule of thumb: if there is a need to support complex builds (even with pybindings for dynamic C/C++ libraries), `setuptools` will be an appropite tool for that. For many modern Python projects `poetry` provides a simple configuration, both for project dependency management (it can simplify Dockerfiles) and for package build.
 
-Let's dive into the `poetry` [Introduction (1)](https://python-poetry.org/docs/) and the [Basic Usage (2)](https://python-poetry.org/docs/basic-usage/) and setup a dependency managemnt & possibility to build our package.
+There are two main systems for dependency management and package building in Python: `setuptools` and `poetry`. As a rule of thumb, if your project requires complex builds (e.g., with Python bindings for dynamic C/C++ libraries), `setuptools` is a suitable choice. However, for many modern Python projects, `poetry` offers simpler configuration, making both dependency management (which can simplify Dockerfiles) and package building easier.
+
+Explore the `poetry` [Introduction](https://python-poetry.org/docs/) and [Basic Usage](https://python-poetry.org/docs/basic-usage/) to set up dependency management and enable package building.
 
 ```bash
 python3 -m pip install --user pipx
@@ -183,28 +196,33 @@ python3 -m pipx ensurepath
 pipx install poetry
 ```
 
-Remember to modify the `.gitignore` file to omit any necesery files from the git tracking.
+Remember to update the `.gitignore` file to exclude any necessary files from Git tracking.
 
 ---
-## Task 4 - Logging experument with wandb
-Add the *Weights & Biases* (`wandb`) logger.
+## Task 4 - Logging experiment with Weights & Biases (wandb)
+
+Add the *Weights & Biases* (`wandb`) logger to track and visualize your experiments.
+
 ```bash
 pip3 install wandb
 ```
-1. Follow the [official wandb guide](https://docs.wandb.ai/quickstart/).
-2. Log the `training_loss`, `validation_loss`, and *your code* as an artifact.
-3. Create a screenshot of a run with the loss curve and the uploaded artifact.
+
+1. Follow the [official wandb guide](https://docs.wandb.ai/quickstart).
+2. Log `training_loss`, `validation_loss`, and *your code* as an artifact.
+3. Capture a screenshot of a run showing the loss curve and the uploaded artifact.
 4. Commit this screenshot to the repository.
 
 ---
-## Task 5 - Hyperoptimization
-Use the `optuna` to find the best hyperparamers (e.g. `learning rate` or `epoch`).
+## Task 5 - Hyperparameter Optimization
+
+Use `optuna` to find the best hyperparameters (e.g., `learning rate` or `epochs`).
 
 ```bash
 pip3 install optuna
 ```
 
-Use the [official examples](https://optuna.org/#code_examples) and perform some hyperopt search. Here is a small example:
+Refer to the [official examples](https://optuna.org/#code_examples) and conduct a hyperparameter search. Here is a small example:
+
 ```python3
 import optuna
 
@@ -219,17 +237,20 @@ study.best_params  # E.g. {'x': 2.002108042}
 ```
 
 ---
-## Task 6 - Docstrings & typing
-1. Add docstrings to all classes and functions which can be used publicly or are not trivial: https://peps.python.org/pep-0257/
-2. Add typing to every function and method in your project: https://realpython.com/python-type-checking/#hello-types
+## Task 6: Docstrings & Typing
+
+1. Add docstrings to all public or non-trivial classes and functions. Refer to PEP 8 (Style Guide for Python Code) for guidance: https://peps.python.org/pep-0257/
+2. Add type annotations to every function and method in your project. This article provides a good introduction: https://realpython.com/python-type-checking/#hello-types
 
 ---
-## Things we did not cover
+## Additional Topics
+
 - Linting
 - Automatic testing
 - Automation (GitHub Actions)
-- CI\CD
+- CI/CD (Continuous Integration/Continuous Delivery)
 
 ---
 ## Sources:
+
 - [github.com/leggedrobotics/plr-exercise](https://github.com/leggedrobotics/plr-exercise) by @JonasFrey96
